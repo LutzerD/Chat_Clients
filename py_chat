@@ -67,7 +67,7 @@ file1.close()
 
 #concern for input having "" in them
 
-print "Entering while loop"
+#print "Entering while loop"
 
 thread.start_new_thread(acceptInput, ())
 
