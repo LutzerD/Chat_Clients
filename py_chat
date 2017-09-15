@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+import time
+import thread
+
+from datetime import date
+
+print(chr(27) + "[2J") 
+
+username = ""
+chatSplitter = "!*#^)#ddW@"
+
+def checkValidUsername(username):
+	check = 0
+	while(check == 0):
+
+		if len(username) < 1:
+			error = "OOoooo spooky ghost no name, get a real name nerd"
+		else:
+			check = 1
+
+		if check == 0:
+			username = raw_input("Please re-enter name, \r\nerror: %s\r\n" % error)
+#		print "Whiling check valid"
+	return
+
+def checkAcceptableUsername():
+	answer = "asfasdf"
+	while (answer[0].lower() != "y"):
+		username = raw_input("Please enter a username.\r\n")
+		checkValidUsername(username)
+		answer = raw_input("Your username will be %s, is that okay? (Y/n)\r\n" % username)
+#		print "whiling unconfirmed username"
+		if len(answer) < 1:
+			answer = "y"
+	return username
+
+def acceptInput():
+	while(1):
+		message = raw_input("")
+		if len(message) >= 1:
+#			print "Len > 1"
+#			print "Opening %s." % chatroomName
+			try:
+				file2 = open(chatroomName,"a")
+#				print "Opened as a"
+			except IOError:
+				file2 = open(chatroomName,"w+")
+#				print "Opened as w+"
+			msg = "%s: %s%s" % (username, message,chatSplitter)
+#			print "Message = %s" % msg
+			file2.write(msg)
+			file2.close()
+
+username = checkAcceptableUsername()
+
+chatroomName = date.today().strftime("%A %d. %B %Y").replace(".", "").replace(" ", "")
+
+try:
+	file1 = open(chatroomName,"r+")
+#	print "Opened as r+"
+except IOError:
+	file1 = open(chatroomName,"w+")
+#	print "Opened as w+"
+
+prevNumLines = len(file1.read().split(chatSplitter))
+file1.close()
+
+#concern for input having "" in them
+
+print "Entering while loop"
+
+thread.start_new_thread(acceptInput, ())
+
+while(1):
+	try:
+		file2 = open(chatroomName,"r+")
+#		print "Opened as r+"
+	except IOError:
+		file2 = open(chatroomName,"w+")
+#		print "Opened as w+"
+
+	filecontent = file2.read().split(chatSplitter)
+	currentNumLines = len(filecontent)
+	if currentNumLines > prevNumLines:
+#		print "Curr > prev"
+#		print "Len filecontent:%d." % len(filecontent)
+		for line in filecontent[prevNumLines-1:-1]:
+			if line[0:len(username)] != username:
+#				print "Printing Line"
+				print line
+		prevNumLines = currentNumLines
+#	print "Current # lines: %s." % currentNumLines
+#	print "Prev # lines: %s." % prevNumLines
+
+	file2.close()
+	time.sleep(.1)
