@@ -16,8 +16,7 @@ public class serverMessage {
         return serverMessage;
     }
 
-
-    //TODO: IDea: this will return message type, then case/switch up top will determine whats next
+    //TODO: dealing with users joining / leaving
     /*
     Current returns:
     {
