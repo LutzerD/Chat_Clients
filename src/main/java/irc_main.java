@@ -48,8 +48,8 @@ public class irc_main {
         chatRoom = user.getPref("CHATROOM");
 
         System.out.println("Loading room... (10s Please)");
-
         utils = new serverUtills(socketInput,socketOutput,u,s,chatRoom);
+
         utils.ircInput("NICK",nick);
         utils.ircInput("USER",username + " 0 * :" + realName);
         utils.ircInput("JOIN", chatRoom);

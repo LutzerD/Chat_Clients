@@ -32,9 +32,11 @@ public class serverMessage {
         String joinedResponse =  "JOIN " + chatRoom;
         String nickInUseResponse = "Nickname is already in use.";
         String timeOutResponse = "(Connection timed out)";
+        String badNick = ":Erroneous Nickname";
+        String allMembers = chatRoom + " :End of /NAMES list.";
+        String quitterResponse = "QUIT :";
         String serverMessageTemp;
         String responseCode;
-
         //Separate try catches? but try/catch latency is not optimal, :C
         //TODO: Optimize for different message lengths
 
@@ -45,7 +47,6 @@ public class serverMessage {
             }
         }
 
-        //doesnt work
         //TODO: loop when nick used
         if(serverMessageLength - nickInUseResponse.length()>=0) {
             serverMessageTemp = serverMessage.substring(serverMessage.length() - nickInUseResponse.length());
@@ -60,6 +61,12 @@ public class serverMessage {
                 return "TimeOut";
             }
         }
+        if(serverMessageLength - badNick.length()>=0) {
+            serverMessageTemp = serverMessage.substring(serverMessage.length() - badNick.length());
+            if (serverMessageTemp.equals(badNick)) {
+                return "badNick";
+            }
+        }
 
         if (serverMessage.startsWith("PING")) {
             String spaceBuffer = " ";
@@ -72,6 +79,18 @@ public class serverMessage {
             return "MessageRecieved";
         }
 
+
+        if(serverMessageLength - allMembers.length()>=0) {
+            serverMessageTemp = serverMessage.substring(serverMessage.length() - allMembers.length());
+            if (serverMessageTemp.equals(allMembers)) {
+                return "MemberList";
+            }
+        }
+
+        //:ninnty!~bootyButt@128.233.8.104 QUIT :Remote host closed the connection
+        if(serverMessage.indexOf(quitterResponse) != -1) {
+                return "quitter";
+        }
 
         return "n/a";
     }

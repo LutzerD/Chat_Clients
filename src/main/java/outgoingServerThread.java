@@ -17,15 +17,25 @@ public class outgoingServerThread extends Thread{
     private static String chatRoom;
     private static serverUtills utils;
     private static Scanner console;
+    String t;
 
     public void run(){
 
         console = new Scanner(System.in);
         utils = new serverUtills(socketInput,socketOutput,you,s,chatRoom);
-        System.out.println("In thread, ready to msg?");
-        while (true) {
-            utils.ircInput("MSG", console.nextLine());
+        System.out.println("In thread, ready to msg.");
+        try {
+            while (console.hasNextLine()) {
+                t = console.nextLine();
+                //System.out.println("Sending message:"  + t);
+                utils.ircInput("MSG", t);
+                while(!console.hasNextLine()){}
+            }
+        }catch(Exception e){
+            //utils.ircInput("MSG", t);
+            run();
         }
+        System.out.println("Exiting scanner");
     }
 
     Thread runner;

@@ -12,6 +12,7 @@ public class incomingServerThread extends Thread {
     private static String chatRoom;
     private static serverUtills utils;
     private static outgoingServerThread serverThreadO;
+    private static boolean key;
 
     public void run(){
 
@@ -21,15 +22,18 @@ public class incomingServerThread extends Thread {
         String[] serverMessageTemp;
         String incomingUser;
         String incomingHostname;
+        String prevMsg;
 
-        System.out.println("In thread, waiting to join?");
+        //System.out.println("In thread, waiting to join?");
         serverMessage servermessage = new serverMessage(chatRoom);
+        key = false;
+        prevMsg = "";
         while (socketInput.hasNext()){
             serverMessage.setMessage(socketInput.nextLine());
 
             serverMessageListTemp = new String[]{serverMessageList[1], serverMessageList[2], serverMessageList[3], serverMessage.getMessage()};
             serverMessageList = serverMessageListTemp;
-            System.out.println(servermessage.getMessage());
+            //System.out.println(servermessage.getMessage());
 
              /*
             Current returns of .checkServerMessage():
@@ -42,9 +46,27 @@ public class incomingServerThread extends Thread {
             "n/a" : None of the above clicked, this is the default response
             }
             */
+
+
+
+
             switch(serverMessage.checkServerMessage()){
-                case "Joined" : System.out.println("Joined room " + chatRoom); //Concern for joining multiple rooms?
-                    serverThreadO = new outgoingServerThread(socketInput,socketOutput,you,s,"main_threadO",chatRoom);
+                case "Joined" : //System.out.println("Joined room " + chatRoom); //Concern for joining multiple rooms?
+                    //this only works if you are good...
+                    serverMessageTemp = serverMessage.getMessage().split(":");
+                    incomingUser = serverMessageTemp[1].split("!",2)[0];
+                    try {
+                        incomingHostname = serverMessageTemp[1].split("freenode/ip.")[1].split(" ")[0];
+                    }
+                    catch(Exception e){
+                        incomingHostname = serverMessageTemp[1].split("@")[1].split(" ")[0];
+                    }
+                    if (key == false) {
+                        serverThreadO = new outgoingServerThread(socketInput, socketOutput, you, s, "main_threadO", chatRoom);
+                        key = true;
+                    }else{
+                        System.out.println(incomingHostname + "@ " + incomingUser + " has joined " + chatRoom); //person has joined the room.
+                    }
                     break;
                 case "NickUsed" : System.out.println("Nickname in use.");//Idk if this is a problem? since doesn't it just put @ infront of name.
                     try {
@@ -65,16 +87,39 @@ public class incomingServerThread extends Thread {
                     //Split at ! and take ! on? maybe format ip@ name$?
                     serverMessageTemp = serverMessage.getMessage().split(":");
                     incomingUser = serverMessageTemp[1].split("!",2)[0];
-                    incomingHostname = serverMessageTemp[1].split("freenode/ip.")[1].split(" ")[0];
+                    try {
+                        incomingHostname = serverMessageTemp[1].split("freenode/ip.")[1].split(" ")[0];
+                    }
+                    catch(Exception e){
+                        incomingHostname = serverMessageTemp[1].split("@")[1].split(" ")[0];
+                    }
                     System.out.println("->" + incomingHostname + "@ " + incomingUser + "$ " + serverMessageTemp[2]);
-                    utils.ircInput("MSG", "please");
+                    //utils.ircInput("MSG", "please");
                     break;
+                case "badNick":
+                    //restart chat with " " replaced with ""
+                    break;
+                case "MemberList":
+                    System.out.println("Current users in room: " + prevMsg.split(":")[2].replace(" ", ", "));
+                    break;
+                case "quitter":
+                    serverMessageTemp = serverMessage.getMessage().split(":");
+                    incomingUser = serverMessageTemp[1].split("!",2)[0];
+                    try {
+                        incomingHostname = serverMessageTemp[1].split("freenode/ip.")[1].split(" ")[0];
+                    }
+                    catch(Exception e) {
+                        incomingHostname = serverMessageTemp[1].split("@")[1].split(" ")[0];
+                    }
+                    System.out.println(incomingHostname + "@ " + incomingUser + " has quit " + chatRoom); //person has joined the room.
+
                 case "n/a" :
                     break;
                 //Having the pong response as default is probably pretty sloppy programming but life is tough.
                 default: utils.ircInput("PONG", serverMessage.checkServerMessage());
 
             }
+            prevMsg = serverMessage.getMessage();
         }
         try {
             utils.closeConn(s,"stop" , serverMessageList);

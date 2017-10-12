@@ -14,7 +14,7 @@ public class user {
 
     public user() {
 
-        System.out.println("Hi I am the constructor, I am running.");
+        //System.out.println("Hi I am the constructor, I am running.");
         console = new Scanner(System.in);
         chatRoom = "##ece-usask";
 
@@ -32,8 +32,7 @@ public class user {
 
     private static void getInput() {
         System.out.println("Enter a nickname please");
-        preferences.put("NICK", console.nextLine());
-
+        preferences.put("NICK", console.nextLine().replace(" ",""));
         //TODO: Add random usernames / realnames, shits too much effort. random number from 1-26, matches with letter, gg.
         //System.out.println("Enter a username please");
         //username = console.nextLine();
@@ -41,11 +40,13 @@ public class user {
         //System.out.println("Enter a realname please");
         //realName = console.nextLine();
 
+        /*
         System.out.println("Enter a desired chatroom. Default: " + chatRoom);
         chatRoomTemp = console.nextLine();
         if (chatRoomTemp.length() > 2) {
             chatRoomTemp = console.nextLine();
         }
+        */
     }
 
     public static String getPref(String key) {

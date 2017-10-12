@@ -46,9 +46,11 @@ public class serverUtills {
 
         String fullMessage;
         if (directive == "MSG"){
-            fullMessage = "PRIVMSG " + chatRoom + " "+  msg;
-            System.out.println("Sending message(not):" + fullMessage);
-        }else {
+            fullMessage = "PRIVMSG " + chatRoom + " :"+  msg;
+            //System.out.println("<-localhost@ " + you.getPref("NICK") +"$ "+ fullMessage);
+        }else if(directive == "NICK") {
+            fullMessage = directive +" :"+ msg;
+        } else {
             fullMessage = directive +" "+ msg;
         }
 
