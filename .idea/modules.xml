@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IRC_dreaming.iml" filepath="$PROJECT_DIR$/.idea/modules/IRC_dreaming.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IRC_dreaming_main.iml" filepath="$PROJECT_DIR$/.idea/modules/IRC_dreaming_main.iml" group="IRC_dreaming" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IRC_dreaming_test.iml" filepath="$PROJECT_DIR$/.idea/modules/IRC_dreaming_test.iml" group="IRC_dreaming" />
+    </modules>
+  </component>
+</project>
